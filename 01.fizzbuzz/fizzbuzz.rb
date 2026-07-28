@@ -1,9 +1,9 @@
-x = (1..20).to_a 
+numbers = (1..20) 
 
-x.each do |x|
+number.each do |x|
   case
   when x % 15 == 0
-    puts "FizzBuzz" 
+    puts "FizzBuzz"
   when x % 3 == 0
     puts "Fizz"
   when x % 5 == 0
