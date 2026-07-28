@@ -5,9 +5,9 @@ x.each do |x|
   when x % 15 == 0
     puts "Fizz" 
   when x % 3 == 0
-      puts "Buzz"
+    puts "Buzz"
   when x % 5 == 0
-      puts "FizzBuzz"
+    puts "FizzBuzz"
   else puts x.to_s
   end
 end
