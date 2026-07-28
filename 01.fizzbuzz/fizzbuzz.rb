@@ -1,6 +1,6 @@
 numbers = (1..20) 
 
-number.each do |x|
+numbers.each do |x|
   case
   when x % 15 == 0
     puts "FizzBuzz"
