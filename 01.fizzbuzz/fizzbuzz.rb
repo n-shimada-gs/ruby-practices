@@ -9,6 +9,6 @@ x.each do |x|
   when x % 5 == 0
     puts "Buzz"
   else
-    puts x.to_s
+    puts x
   end
 end
