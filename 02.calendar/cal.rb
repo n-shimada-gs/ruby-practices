@@ -5,8 +5,8 @@ require 'optparse'
 
 # デフォルト(引数を指定しない場合は、今月・今年のカレンダーが表示)
 options = {
-   m: Date.today.month,  # 間にスペースを追加
-   y: Date.today.year
+  m: Date.today.month,  # 間にスペースを追加
+  y: Date.today.year
 }
 # 引数設定
 opt = OptionParser.new
@@ -36,4 +36,3 @@ end
 
 # ターミナルのプロンプト巻き込み回避用
 puts ""
-# 改行を追加
