@@ -2,7 +2,6 @@
 
 score = ARGV[0]
 scores = score.split(',') # 投球毎に分割する
-p scores
 
 remaining = scores.dup
 frames_1to9_raw = []
