@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 numbers = (1..20) 
 
 numbers.each do |x|
