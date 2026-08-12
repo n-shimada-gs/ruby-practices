@@ -9,16 +9,16 @@ frames_1to9_shots = []
 9.times do
   shot = remaining.shift
   frames_1to9_shots << shot
-  if shot == 10
-    frames_1to9_shots << 0
-  else
-    frames_1to9_shots << remaining.shift # ストライク以外の2投目
-  end
+  frames_1to9_shots << if shot == 10
+                         0
+                       else
+                         remaining.shift # ストライク以外の2投目
+                       end
 end
 
 frame10_shots = remaining # 残りが10フレーム目の文字列データ
 
-frames = (frames_1to9_shots.each_slice(2).to_a) << frame10_shots
+frames = frames_1to9_shots.each_slice(2).to_a << frame10_shots
 
 point = frames.each_with_index.sum do |frame, i|
   if i == 9
@@ -32,7 +32,7 @@ point = frames.each_with_index.sum do |frame, i|
       10 + frames[i + 1].sum # 通常のストライクの計算
     end
   elsif frame.sum == 10 # spare
-      frame.sum + frames[i + 1][0]
+    frame.sum + frames[i + 1][0]
   else
     frame.sum
   end
