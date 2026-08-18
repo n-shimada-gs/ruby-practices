@@ -2,21 +2,21 @@
 
 score = ARGV[0]
 scores = score.split(',')
-shots = scores.map { |s| s == 'X' ? 10 : s.to_i }
-remaining = shots.dup
 
+remaining = scores.dup
 frames_1to9_shots = []
 9.times do
   shot = remaining.shift
-  frames_1to9_shots << shot
-  frames_1to9_shots << if shot == 10
-                         0
-                       else
-                         remaining.shift # ストライク以外の2投目
-                       end
+  if shot == 'X'
+    frames_1to9_shots << 10
+    frames_1to9_shots << 0
+  else
+    frames_1to9_shots << shot.to_i
+    frames_1to9_shots << remaining.shift.to_i
+  end
 end
 
-frame10_shots = remaining
+frame10_shots = remaining.map { |s| s == 'X' ? 10 : s.to_i }
 
 frames = frames_1to9_shots.each_slice(2).to_a << frame10_shots
 
@@ -28,7 +28,7 @@ point = frames.each_with_index.sum do |frame, i|
       if i == 8
         frames[i + 1][0, 2].sum
       elsif frames[i + 1][0] == 10
-        10 + frames[i + 2][0]
+        frames[i + 1, 2].map(&:first).sum
       else
         frames[i + 1].sum
       end
