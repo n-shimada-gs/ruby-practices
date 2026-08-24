@@ -2,11 +2,11 @@
 # frozen_string_literal: true
 
 def fetch_files(target_dir = '.')
-  Dir.glob('*', base: target_dir).sort
+  Dir.glob('*', base: target_dir)
 end
 
 def calculate_rows(file_count, cols)
-  (file_count / cols.to_f).ceil
+  file_count.ceildiv(cols)
 end
 
 def build_grid(files, rows)
@@ -21,9 +21,9 @@ def print_grid(grid, column_width)
   end
 end
 
-cols = 3
+COLS = 3
 files = fetch_files
-rows = calculate_rows(files.size, cols)
+rows = calculate_rows(files.size, COLS)
 grid = build_grid(files, rows)
 max_length = files.map(&:length).max || 0
 column_width = max_length + 2
