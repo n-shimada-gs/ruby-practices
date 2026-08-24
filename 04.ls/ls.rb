@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+COLS = 3
 
 def fetch_files(target_dir = '.')
   Dir.glob('*', base: target_dir)
@@ -21,7 +22,6 @@ def print_grid(grid, column_width)
   end
 end
 
-COLS = 3
 files = fetch_files
 rows = calculate_rows(files.size, COLS)
 grid = build_grid(files, rows)
