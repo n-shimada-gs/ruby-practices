@@ -1,9 +1,15 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+
+require 'optparse'
 COLS = 3
 
-def fetch_files(target_dir = '.')
-  Dir.glob('*', base: target_dir)
+def fetch_files(opt, target_dir = '.')
+  if opt['a']
+    Dir.children(target_dir).sort
+  else
+    Dir.glob('*', base: target_dir)
+  end
 end
 
 def calculate_rows(file_count, cols)
@@ -22,7 +28,8 @@ def print_grid(grid, column_width)
   end
 end
 
-files = fetch_files
+opt = ARGV.getopts('a')
+files = fetch_files(opt)
 rows = calculate_rows(files.size, COLS)
 grid = build_grid(files, rows)
 max_length = files.map(&:length).max || 0
