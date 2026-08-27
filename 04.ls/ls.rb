@@ -5,11 +5,9 @@ require 'optparse'
 COLS = 3
 
 def fetch_files(opt, target_dir = '.')
-  if opt['a']
-    Dir.children(target_dir).sort
-  else
-    Dir.glob('*', base: target_dir)
-  end
+  flags = opt['a'] ? File::FNM_DOTMATCH : 0
+
+  Dir.glob('*', base: target_dir, flags: flags)
 end
 
 def calculate_rows(file_count, cols)
