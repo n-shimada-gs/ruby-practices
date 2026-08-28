@@ -1,25 +1,41 @@
+# frozen_string_literal: true
+
 require_relative './shot'
 
 class Frame
-  def initialize(first_shot, second_shot, third_shot = nil)
-    @first_shot = Shot.new(first_mark)
-    @second_shot = Shot.new(second_mark)
-    @third_shot = Shot.new(third_mark) if third_shot
+  def self.build(marks, last_frame: false)
+    shots =
+      if last_frame
+        marks.map { |mark| Shot.new(mark) }
+      elsif marks[0] == 'X'
+        [Shot.new('X'), Shot.new('0')]
+      else
+        [Shot.new(marks[0]), Shot.new(marks[1])]
+      end
+    new(shots)
+  end
+
+  def initialize(shots)
+    @shots = shots
   end
 
   def score
-    total_score = @first_shot.score + @second_shot.score
-    total_score += @third_shot.score if @third_shot
-    total_score
+    @shots.map(&:point).sum
   end
 
   def strike?
-    @first_shot.mark == 'X'
+    @shots[0].mark == 'X'
   end
 
   def spare?
-
+    !strike? && score == 10
   end
 
-frame = Frame.new('7', '2')
-frame.score
+  def first_point
+    @shots[0].point
+  end
+
+  def bonus_points
+    @shots.first(2).sum(&:point)
+  end
+end

@@ -1,4 +1,4 @@
-require_relative './frame'
+# frozen_string_literal: true
 
 class Shot
   attr_reader :mark
@@ -11,7 +11,3 @@ class Shot
     @mark == 'X' ? 10 : @mark.to_i
   end
 end
-
-shot = Shot.new('X')
-shot.mark
-shot.point
