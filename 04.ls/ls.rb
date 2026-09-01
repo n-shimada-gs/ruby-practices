@@ -6,8 +6,8 @@ COLS = 3
 
 def fetch_files(opt, target_dir = '.')
   flags = opt['a'] ? File::FNM_DOTMATCH : 0
-
-  Dir.glob('*', base: target_dir, flags: flags)
+  files_list = Dir.glob('*', base: target_dir, flags: flags)
+  opt['r'] ? files_list.reverse : files_list
 end
 
 def calculate_rows(file_count, cols)
@@ -26,7 +26,7 @@ def print_grid(grid, column_width)
   end
 end
 
-opt = ARGV.getopts('a')
+opt = ARGV.getopts('a', 'r')
 files = fetch_files(opt)
 rows = calculate_rows(files.size, COLS)
 grid = build_grid(files, rows)
