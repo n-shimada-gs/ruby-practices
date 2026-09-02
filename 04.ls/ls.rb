@@ -24,6 +24,12 @@ def file_type(stat)
   end
 end
 
+def special_bit_char(current_char, bit_set, exec_char, no_exec_char)
+  return current_char unless bit_set
+
+  current_char == 'x' ? exec_char : no_exec_char
+end
+
 def octal_to_rwx(stat)
   mode = stat.mode
   octal_str = format('%03o', mode & 0o777)
