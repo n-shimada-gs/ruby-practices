@@ -16,18 +16,26 @@ def file_type(stat)
   when 'file' then '-'
   when 'directory' then 'd'
   when 'link' then 'l'
+  when 'characterSpecial' then 'c'
+  when 'blockSpecial' then 'b'
+  when 'fifo' then 'p'
+  when 'socket' then 's'
   else ' '
   end
 end
 
-def octal_to_rwx(mode)
+def octal_to_rwx(stat)
+  mode = stat.mode
   octal_str = format('%03o', mode & 0o777)
   perm_map = {
     '0' => '---', '1' => '--x', '2' => '-w-', '3' => '-wx',
     '4' => 'r--', '5' => 'r-x', '6' => 'rw-', '7' => 'rwx'
   }
-  
-  octal_str.chars.map { |char| perm_map[char] }.join
+  perm = octal_str.chars.map { |char| perm_map[char] }.join
+  perm[2] = special_bit_char(perm[2], stat.setuid?, 's', 'S')
+  perm[5] = special_bit_char(perm[5], stat.setgid?, 's', 'S')
+  perm[8] = special_bit_char(perm[8], stat.sticky?, 't', 'T')
+  perm
 end
 
 def build_details(files)
@@ -35,7 +43,7 @@ def build_details(files)
     stat = File::Stat.new(name)
     {
       type: file_type(stat),
-      permission: octal_to_rwx(stat.mode),
+      permission: octal_to_rwx(stat),
       link: stat.nlink,
       owner: Etc.getpwuid(stat.uid).name,
       group: Etc.getgrgid(stat.gid).name,
@@ -87,7 +95,7 @@ def print_grid(grid, column_width)
   end
 end
 
-opt = ARGV.getopts('a', 'r','l')
+opt = ARGV.getopts('a', 'r', 'l')
 files = fetch_files(opt)
 
 if opt['l']
