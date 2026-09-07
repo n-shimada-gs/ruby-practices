@@ -4,40 +4,22 @@ require_relative './frame'
 
 class Game
   def initialize(score_string)
-    marks = score_string.split(',')
-    remaining = marks.dup
+    remaining_marks = score_string.split(',')
 
-    frames_1to9 = []
-    9.times do
-      mark = remaining.shift
-      frame_marks = mark == 'X' ? [mark] : [mark, remaining.shift]
-      frames_1to9 << Frame.build(frame_marks)
+    @frames = 10.times.map do |i|
+      if i < 9
+        Frame.new(remaining_marks)
+      else
+        Frame.new(remaining_marks, last_frame: true)
+      end
     end
 
-    frame10 = Frame.build(remaining, last_frame: true)
-
-    @frames = frames_1to9 << frame10
-  end
-
-  def score
-    @frames.each_with_index.sum do |frame, index|
-      frame.score + bonus(frame, index)
+    @frames.each_with_index do |frame, i|
+      frame.set_context(i, @frames)
     end
   end
 
-  private
-
-  def bonus(frame, index)
-    return 0 if index == 9
-    return @frames[index + 1].first_point if frame.spare?
-    return 0 unless frame.strike?
-
-    if index == 8
-      @frames[index + 1].bonus_points
-    elsif @frames[index + 1].strike?
-      @frames[index + 1].first_point + @frames[index + 2].first_point
-    else
-      @frames[index + 1].bonus_points
-    end
+  def final_score
+    @frames.sum(&:total_points)
   end
 end
