@@ -4,4 +4,4 @@ require_relative './game'
 
 score_string = ARGV[0]
 game = Game.new(score_string)
-puts game.final_score
+puts game.game_score

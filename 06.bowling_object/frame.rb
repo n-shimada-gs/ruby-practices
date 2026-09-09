@@ -3,28 +3,25 @@
 require_relative './shot'
 
 class Frame
-  def initialize(remaining_marks, last_frame: false)
+  def initialize(marks, index:, frames:, last_frame: false)
+    @index = index
+    @frames = frames
     @last_frame = last_frame
     @shots =
       if last_frame
-        remaining_marks.map { |mark| Shot.new(mark) }
+        marks.map { |mark| Shot.new(mark) }
       else
-        first_shot = Shot.new(remaining_marks.shift)
+        first_shot = Shot.new(marks[0])
         if first_shot.strike?
-          [first_shot, Shot.new('0')]
+          [first_shot]
         else
-          [first_shot, Shot.new(remaining_marks.shift)]
+          [first_shot, Shot.new(marks[1])]
         end
       end
   end
 
-  def set_context(index, frames)
-    @index = index
-    @frames = frames
-  end
-
-  def score
-    @shots.map(&:point).sum
+  def calc_frame
+    @shots.sum(&:shot_score)
   end
 
   def strike?
@@ -32,31 +29,37 @@ class Frame
   end
 
   def spare?
-    !strike? && score == 10
+    !strike? && calc_frame == 10
   end
 
-  def first_point
-    @shots[0].point
+  def first_score
+    @shots[0].shot_score
   end
 
-  def bonus_points
-    return score if @last_frame || !strike?
-    return @shots.first(2).sum(&:point) if @index == 8
-
-    10 + @frames[@index + 2].first_point
+  def first_second_score
+    @shots.first(2).sum(&:shot_score)
   end
 
-  def total_points
-    score + bonus
+  def total_frame_score
+    calc_frame + calc_bonus
   end
 
   private
 
-  def bonus
+  def calc_bonus
     return 0 if @last_frame
-    return @frames[@index + 1].bonus_points if strike?
-    return @frames[@index + 1].first_point if spare?
 
-    0
+    if strike?
+      next_frame = @frames[@index + 1]
+      if @index == 8 || !next_frame.strike?
+        next_frame.first_second_score
+      else
+        next_frame.first_score + @frames[@index + 2].first_score
+      end
+    elsif spare?
+      @frames[@index + 1].first_score
+    else
+      0
+    end
   end
 end
