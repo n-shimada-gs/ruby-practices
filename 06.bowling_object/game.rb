@@ -9,15 +9,13 @@ class Game
 
     @frames = []
     10.times do |i|
-      frame =
-        if i < 9
-          mark = remaining_marks.shift
-          marks = Shot.new(mark).strike? ? [mark] : [mark, remaining_marks.shift]
-          Frame.new(marks, index: i, frames: @frames)
-        else
-          Frame.new(remaining_marks, index: i, frames: @frames, last_frame: true)
-        end
-      @frames << frame
+      if i < 9
+        shot = Shot.new(remaining_marks.shift)
+        next_shot = shot.strike? ? [shot] : [shot, Shot.new(remaining_marks.shift)]
+        @frames << Frame.new(next_shot, index: i, frames: @frames)
+      else
+        @frames << Frame.new(remaining_marks.map { |mark| Shot.new(mark) }, index: i, frames: @frames)
+      end
     end
   end
 

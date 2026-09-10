@@ -3,22 +3,17 @@
 require_relative './shot'
 
 class Frame
-  def initialize(marks, index:, frames:, last_frame: false)
+  def initialize(shots, index:, frames:)
     @index = index
     @frames = frames
-    @last_frame = last_frame
-    @shots =
-      if last_frame
-        marks.map { |mark| Shot.new(mark) }
-      else
-        first_shot = Shot.new(marks[0])
-        if first_shot.strike?
-          [first_shot]
-        else
-          [first_shot, Shot.new(marks[1])]
-        end
-      end
+    @shots = shots
   end
+
+  def total_frame_score
+    calc_frame + calc_bonus
+  end
+
+  protected
 
   def calc_frame
     @shots.sum(&:shot_score)
@@ -40,14 +35,10 @@ class Frame
     @shots.first(2).sum(&:shot_score)
   end
 
-  def total_frame_score
-    calc_frame + calc_bonus
-  end
-
   private
 
   def calc_bonus
-    return 0 if @last_frame
+    return 0 if @index == 9
 
     if strike?
       next_frame = @frames[@index + 1]
