@@ -3,20 +3,20 @@
 require_relative './shot'
 
 class Frame
-  def initialize(shots, index:, frames:)
+  def initialize(shots, index, frames)
+    @shots = shots
     @index = index
     @frames = frames
-    @shots = shots
   end
 
-  def total_frame_score
-    calc_frame + calc_bonus
+  def calc_score
+    raw_score + calc_bonus
   end
 
   protected
 
-  def calc_frame
-    @shots.sum(&:shot_score)
+  def raw_score
+    @shots.sum(&:score)
   end
 
   def strike?
@@ -24,15 +24,15 @@ class Frame
   end
 
   def spare?
-    !strike? && calc_frame == 10
+    !strike? && raw_score == 10
   end
 
   def first_score
-    @shots[0].shot_score
+    @shots[0].score
   end
 
   def first_second_score
-    @shots.first(2).sum(&:shot_score)
+    @shots.first(2).sum(&:score)
   end
 
   private
