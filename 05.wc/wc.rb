@@ -2,23 +2,13 @@
 
 require 'optparse'
 
-def count_file(file_path)
-  file = File.read(file_path)
-  {
-    lines: file.count("\n"),
-    words: file.split.size,
-    bytes: file.bytesize,
-    path: file_path
-  }
-end
-
-def count_stdin
-  content = $stdin.read
+def count_file(file)
+  content = file.nil? ? $stdin.read : File.read(file)
   {
     lines: content.count("\n"),
     words: content.split.size,
     bytes: content.bytesize,
-    path: nil
+    path: file
   }
 end
 
@@ -57,14 +47,15 @@ def print_files(result, options, width)
 end
 
 opt = ARGV.getopts('l', 'w', 'c')
-files = ARGV
+input = ARGV
 options = select_options(opt)
 
-if files.empty?
-  results = [count_stdin] # 標準入力からの読み込み結果を配列に格納する
+files = input.empty? ? [nil] : input
+results = files.map { |file| count_file(file) } # 処理するファイルの数だけ「count_file」を実行する
+
+if input.empty?
   width = options.size == 1 ? 1 : 7
 else
-  results = files.map { |file| count_file(file) } # 処理するファイルの数だけ「count_file」を実行する
   results << calculate_total(results) if results.size > 1 # ファイルが複数ある場合は合計値を追加する
   width = calculate_width(results, options)
 end
