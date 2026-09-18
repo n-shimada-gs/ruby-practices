@@ -51,12 +51,12 @@ input = ARGV
 options = select_options(opt)
 
 files = input.empty? ? [nil] : input
-results = files.map { |file| count_file(file) } # 処理するファイルの数だけ「count_file」を実行する
+results = files.map { |file| count_file(file) }
 
 if input.empty?
   width = options.size == 1 ? 1 : 7
 else
-  results << calculate_total(results) if results.size > 1 # ファイルが複数ある場合は合計値を追加する
+  results << calculate_total(results) if results.size > 1
   width = calculate_width(results, options)
 end
 
