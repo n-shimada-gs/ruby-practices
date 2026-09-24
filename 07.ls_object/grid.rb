@@ -13,23 +13,24 @@ class Grid
     return if @files.empty?
 
     column_width = @files.map(&:length).max + 2
-    print_grid(build_grid, column_width)
+    print_grid(column_width)
   end
 
   private
 
-  def calculate_rows
-    @files.size.ceildiv(COLS)
-  end
-
   def build_grid
-    rows = calculate_rows
-    @files.each_slice(rows).map { |col| col.fill(nil, col.length...rows) }.transpose
+    rows = @files.size.ceildiv(COLS)
+    @files.each_slice(rows).map do |col|
+      col.fill(nil, col.length...rows)
+    end.transpose
   end
 
-  def print_grid(grid, column_width)
-    grid.each do |row|
-      puts row.compact.map { |cell| cell.ljust(column_width) }.join
+  def print_grid(column_width)
+    build_grid.each do |row|
+      line = row.compact.map do |cell|
+        cell.ljust(column_width)
+      end.join
+      puts line
     end
   end
 end
