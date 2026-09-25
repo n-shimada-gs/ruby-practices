@@ -20,9 +20,9 @@ class Detail
 
   attr_reader :name
 
-  def initialize(name, stat)
+  def initialize(name)
     @name = name
-    @stat = stat
+    @stat = File::Stat.new(name)
   end
 
   def type
@@ -55,7 +55,7 @@ class Detail
   end
 
   def mtime
-    @stat.mtime.strftime('%b %e %H:%M')
+    @stat.mtime
   end
 
   def blocks

@@ -4,22 +4,22 @@ require_relative './detail'
 
 class DetailsTable
   def initialize(files)
-    @details = files.map { |name| Detail.new(name, File::Stat.new(name)) }
+    @details = files.map { |file| Detail.new(file) }
   end
 
   def print
-    width = %i[size link owner group].to_h { |key| [key, max_width(key)] }
+    widths = %i[size link owner group].to_h { |key| [key, max_width(key)] }
     total = @details.sum(&:blocks) / 2
 
     puts "total #{total}"
     @details.each do |d|
       line = [
         "#{d.type}#{d.permission}",
-        d.link.to_s.rjust(width[:link]),
-        d.owner.to_s.ljust(width[:owner]),
-        d.group.to_s.ljust(width[:group]),
-        d.size.to_s.rjust(width[:size]),
-        d.mtime,
+        d.link.to_s.rjust(widths[:link]),
+        d.owner.to_s.ljust(widths[:owner]),
+        d.group.to_s.ljust(widths[:group]),
+        d.size.to_s.rjust(widths[:size]),
+        d.mtime.strftime('%b %e %H:%M'),
         d.name
       ].join(' ')
       puts line
