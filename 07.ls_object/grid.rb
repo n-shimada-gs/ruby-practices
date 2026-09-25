@@ -17,6 +17,7 @@ class Grid
   end
 
   private
+
   def print_grid(width)
     build_grid.each do |row|
       line = row.compact.map do |cell|
